@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import os
+from time import sleep
 from colorama import init, Fore
 
 # Initialize colorama
@@ -64,7 +65,7 @@ for row in table.find_all("tr")[1:]:
                 
                 # Check if the file already exists in the folder
                 if filename in existing_files:
-                    print(Fore.YELLOW + f"Skipped: {filename} (already exists)")
+                    print(Fore.YELLOW + f"Skipped: {filename}")
                     skipped_counter += 1
                 else:
                     # Download the image
@@ -72,11 +73,14 @@ for row in table.find_all("tr")[1:]:
                     with open(image_path, "wb") as img_file:
                         img_file.write(image_data)
                     print(Fore.GREEN + f"Downloaded: {filename}")
+                    print(original_file_url)
                     url_counter += 1
+                # Add a short delay (5 second) before the next download
+                sleep(5)
             else:
                 missing_url_counter += 1
                 print(Fore.RED + f"No high-resolution image found at {image_page_url}")
-
+    
 print(Fore.CYAN + f"Scraped {url_counter} URLs and downloaded the images.")
 print(Fore.YELLOW + f"Skipped {skipped_counter} URLs (already exist).")
 print(Fore.RED + f"Could not find {missing_url_counter} URLs.")
