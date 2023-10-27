@@ -17,7 +17,14 @@ def find_original_file_url(image_page_url):
         original_file_url = original_file_link["href"]
         return original_file_url
     else:
-        return None
+        # If "Original File" link is missing, look for the fullImageLink
+        full_image_div = image_page_soup.find("div", {"class": "fullImageLink"})
+        if full_image_div:
+            full_image_link = full_image_div.find("a", href=True)
+            if full_image_link:
+                full_image_url = full_image_link["href"]
+                return full_image_url
+    return None
 
 # Define the URL to scrape
 url = "https://www.wikidata.org/wiki/Wikidata:WikiProject_sum_of_all_paintings/Creator/Claude_Monet"
@@ -60,7 +67,7 @@ for row in table.find_all("tr")[1:]:
                     print(Fore.YELLOW + f"Skipped: {filename} (already exists)")
                     skipped_counter += 1
                 else:
-                    # Download the "Original File" image
+                    # Download the image
                     image_data = requests.get(original_file_url).content
                     with open(image_path, "wb") as img_file:
                         img_file.write(image_data)
@@ -68,7 +75,7 @@ for row in table.find_all("tr")[1:]:
                     url_counter += 1
             else:
                 missing_url_counter += 1
-                print(Fore.RED + f"Original File URL not found at {image_page_url}")
+                print(Fore.RED + f"No high-resolution image found at {image_page_url}")
 
 print(Fore.CYAN + f"Scraped {url_counter} URLs and downloaded the images.")
 print(Fore.YELLOW + f"Skipped {skipped_counter} URLs (already exist).")
