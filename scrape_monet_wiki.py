@@ -1,7 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import os
-import colorama
+from colorama import init, Fore
+
+# Initialize colorama
+init(autoreset=True)
 
 def find_original_file_url(image_page_url):
     # Send a GET request to the image page and parse the HTML
@@ -33,7 +36,7 @@ if not os.path.exists("1.original_files"):
 # Get a list of existing files in the folder
 existing_files = os.listdir("1.original_files")
 
-# Initialize a counter to count the scraped URLs
+# Initialize counters
 url_counter = 0
 missing_url_counter = 0
 skipped_counter = 0
@@ -54,19 +57,19 @@ for row in table.find_all("tr")[1:]:
                 
                 # Check if the file already exists in the folder
                 if filename in existing_files:
-                    print(f"Skipped: {filename} (already exists)")
+                    print(Fore.YELLOW + f"Skipped: {filename} (already exists)")
                     skipped_counter += 1
                 else:
                     # Download the "Original File" image
                     image_data = requests.get(original_file_url).content
                     with open(image_path, "wb") as img_file:
                         img_file.write(image_data)
-                    print(f"Downloaded: {filename}")
+                    print(Fore.GREEN + f"Downloaded: {filename}")
                     url_counter += 1
             else:
                 missing_url_counter += 1
-                print(f"Original File URL not found at {image_page_url}")
+                print(Fore.RED + f"Original File URL not found at {image_page_url}")
 
-print(f"Scraped {url_counter} URLs and downloaded the images.")
-print(f"Skipped {skipped_counter} URLs (already exist).")
-print(f"Could not find {missing_url_counter} URLs.")
+print(Fore.CYAN + f"Scraped {url_counter} URLs and downloaded the images.")
+print(Fore.YELLOW + f"Skipped {skipped_counter} URLs (already exist).")
+print(Fore.RED + f"Could not find {missing_url_counter} URLs.")
