@@ -8,6 +8,8 @@ from colorama import Fore, init
 # Initialize colorama
 init(autoreset=True)
 
+original_file_folder = "1.original_files"
+
 # Define the URL to scrape
 url = "https://www.wikidata.org/wiki/Wikidata:WikiProject_sum_of_all_paintings/Creator/Claude_Monet"
 
@@ -48,36 +50,79 @@ soup = BeautifulSoup(response.content, "html.parser")
 table = soup.find("table", {"class": "wikitable"})
 
 # Create a directory to save the original files
-if not os.path.exists("1.original_files"):
-    os.mkdir("1.original_files")
+if not os.path.exists(original_file_folder):
+    os.mkdir(original_file_folder)
 
 # Get a list of existing files in the folder
-existing_files = os.listdir("1.original_files")
+existing_files = os.listdir(original_file_folder)
 
 # Initialize counters
 url_counter = 0
 missing_url_counter = 0
 skipped_counter = 0
+td_counter = 0
 
 # Iterate through the table rows and extract image URLs
 for row in table.find_all("tr")[1:]:
     cells = row.find_all("td")
     if len(cells) >= 2:
+
         image_link = cells[0].find("a", href=True)
+        label = cells[1].find("a", href=True)
+
+        # Clean the label text
+        label = label.text.replace(" ", "_").replace("(", "").replace(")", "").replace(
+            "é", "e").replace("è", "e").replace("à", "a").replace("ç", "c").replace(
+            "ô", "o").replace("ö", "o").replace("ü", "u").replace("ë", "e").replace(
+            "â", "a").replace("î", "i").replace("ê", "e").replace("û", "u").replace(
+            "ù", "u").replace("ï", "i").replace("œ", "oe").replace("ÿ", "y").replace(
+            "É", "E").replace("È", "E").replace("À", "A").replace("Ç", "C").replace(
+            "Ô", "O").replace("Ö", "O").replace("Ü", "U").replace("Ë", "E").replace(
+            "Â", "A").replace("Î", "I").replace("Ê", "E").replace("Û", "U").replace(
+            "Ù", "U").replace("Ï", "I").replace("Œ", "OE").replace("Ÿ", "Y").replace(
+            "’", "").replace(":", "").replace("!", "").replace("?", "").replace(
+            '"', "").replace(
+            "'", "").replace(".", "").replace(",", "").replace(";", "").replace(
+            "«", "").replace("»", "").replace("–", "").replace("-", "").replace(
+            "—", "").replace("–", "").replace("(", "").replace(")", "").replace(
+            "“", "").replace("”", "").replace("„", "").replace("…", "").replace(
+            "°", "").replace("‘", "").replace("’", "").replace("´", "").replace(
+            "¨", "").replace("·", "").replace("†", "").replace("‡", "").replace(
+            "‰", "").replace("‹", "").replace("›", "").replace("€", "").replace(
+            "$", "").replace("£", "").replace("¥", "").replace("¢", "").replace(
+            "¡", "").replace("¿", "").replace("§", "").replace("©", "").replace(
+            "®", "").replace("™", "").replace("¶", "").replace("†", "").replace(
+            "‡", "").replace("°", "").replace("•", "").replace("·", "").replace(
+            "…", "").replace("′", "").replace("″", "").replace("‹", "").replace(
+            "›", "").replace("§", "").replace("№", "").replace("÷", "").replace(
+            "×", "").replace("±", "").replace("∞", "").replace("≠", "").replace(
+            "≤", "").replace("≥", "").replace("µ", "").replace("∂", "").replace(
+            "∑", "").replace("∏", "").replace("π", "").replace("∫", "").replace(
+            "ª", "").replace("º", "").replace("Ω", "").replace("æ", "").replace(
+            "ø", "").replace("¿", "").replace("¡", "").replace("¬", "").replace(
+            "√", "").replace("ƒ", "").replace("≈", "").replace("∆", "").replace(
+            "«", "").replace("»", "").replace("…", "").replace("≠", "")
+
         if image_link:
             image_page_url = "https://commons.wikimedia.org" + \
                 image_link["href"]
 
             original_file_url = find_original_file_url(image_page_url)
             if original_file_url:
+
                 # Extract the filename from the URL
-                filename = original_file_url.split("/")[-1]
-                image_path = os.path.join("1.original_files", filename)
+                # filename = original_file_url.split("/")[-1]
+
+                extension = image_link["href"].split(".")[-1]
+                filename = label + "." + extension
+
+                extension = original_file_url.split(".")[-1]
+                image_path = os.path.join(original_file_folder, filename)
 
                 # Check if the file already exists in the folder
                 if filename in existing_files:
                     print(Fore.YELLOW +
-                          f"Skipped: {filename} (already exists)")
+                          f"Exists: {filename}")
                     print(original_file_url)
                     print()
                     skipped_counter += 1
@@ -95,10 +140,14 @@ for row in table.find_all("tr")[1:]:
                 sleep(0.1)
             else:
                 missing_url_counter += 1
-                print(
-                    Fore.RED + f"No high-resolution image found at {image_page_url}")
+                print(Fore.RED + f"No high-res found at {image_page_url}")
                 print()
+        else:
+            print(Fore.RED + "No image link found.")
+            print()
+    td_counter += 1
 
 print(Fore.CYAN + f"Scraped {url_counter} URLs and downloaded the images.")
 print(Fore.YELLOW + f"Skipped {skipped_counter} URLs (already exist).")
 print(Fore.RED + f"Could not find {missing_url_counter} URLs.")
+print(Fore.BLUE + f"Total number of table cells: {td_counter}")
