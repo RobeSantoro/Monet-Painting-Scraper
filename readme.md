@@ -20,3 +20,13 @@ To use the script, simply run the scrape_monet_wiki.py file using Python. The sc
 
 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+## Disclaimer
+
+> Please note that this project is intended for educational purposes only. When scraping data from websites, it is important to follow ethical and legal guidelines. We recommend using the official [Wikimedia API](https://api.wikimedia.org/wiki/Getting_started_with_Wikimedia_APIs#:~:text=Wikipedia%20and%20other%20Wikimedia%20projects,to%20your%20projects%20and%20apps.) and following the [API Etiquette](https://www.mediawiki.org/wiki/API:Etiquette) to avoid getting banned.  
+
+## Donate
+
+Additionally, please consider donating to the Wikimedia Foundation to support their mission of providing free knowledge to the world.  
+
+You can donate [here](https://donate.wikimedia.org/w/index.php?title=Special:LandingPage&country=IT&uselang=en&utm_medium=wmfSite&utm_source=113&utm_campaign=comms).
