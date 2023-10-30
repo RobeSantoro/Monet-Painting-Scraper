@@ -2,6 +2,8 @@
 
 This is a Python script that scrapes a Wikipedia page for image URLs and downloads the corresponding images. The script uses the requests library to send HTTP requests to the Wikipedia page and the BeautifulSoup library to parse the HTML content of the page. The script then iterates through the table rows of the page, extracts image URLs, and downloads the corresponding images using the requests library. The script also logs the progress of the scraping and downloading process to a log file.
 
+![screenshot](0.media/01_Scraping_Monet.png)
+
 Getting Started
 To use this script, you will need to have Python 3 installed on your machine. You will also need to install the following Python libraries:
 
