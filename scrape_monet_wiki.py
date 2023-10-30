@@ -169,7 +169,8 @@ with open(log_file_path, "a") as log_file:
 
                     missing_url_counter += 1
             else:
-                log("No image link found.")
+                log("No image link found:")
+                log(cells[0])
                 log_newline()
 
                 no_image_counter += 1
