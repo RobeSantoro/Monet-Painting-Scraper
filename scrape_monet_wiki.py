@@ -28,6 +28,7 @@ def find_original_file_url(image_page_url):
     # Find the link with the text "Original File"
     original_file_link = image_page_soup.find(
         "a", string="Original file", href=True)
+
     if original_file_link:
         original_file_url = original_file_link["href"]
         return original_file_url
@@ -40,10 +41,14 @@ def find_original_file_url(image_page_url):
             if full_image_link:
                 full_image_url = full_image_link["href"]
                 return full_image_url
+
     return None
 
 
-# Create a log file and open it in append mode
+# Check if the log_file_path already exists and if the file  is not empty
+# if os.path.exists(log_file_path) and os.path.getsize(log_file_path) > 0:
+#     exit("Log file already exists and is not empty.")
+
 with open(log_file_path, "a") as log_file:
     def log(message):
         print(message)  # Print to the console
@@ -92,7 +97,7 @@ with open(log_file_path, "a") as log_file:
             image_link = cells[0].find("a", href=True)
             label = cells[1].find("a", href=True)
 
-            # Clean the label text (you can customize this further)
+            # Clean the label text
             label = label.text.replace(" ", "_").replace("(", "").replace(")", "").replace(
                 "é", "e").replace("è", "e").replace("à", "a").replace("ç", "c").replace(
                 "ô", "o").replace("ö", "o").replace("ü", "u").replace("ë", "e").replace(
@@ -130,15 +135,13 @@ with open(log_file_path, "a") as log_file:
                     image_link["href"]
 
                 original_file_url = find_original_file_url(image_page_url)
+
                 if original_file_url:
 
-                    # Extract the filename from the URL
-                    # filename = original_file_url.split("/")[-1]
-
-                    extension = image_link["href"].split(".")[-1]
+                    # Extract the extension from the URL and file name from the label
+                    extension = original_file_url.split(".")[-1]
                     filename = label + "." + extension
 
-                    extension = original_file_url.split(".")[-1]
                     image_path = os.path.join(original_file_folder, filename)
 
                     # Check if the file already exists in the folder
@@ -170,11 +173,11 @@ with open(log_file_path, "a") as log_file:
                     missing_url_counter += 1
             else:
                 log("No image link found:")
-                log(cells[0])
+                log(label)
                 log_newline()
 
                 no_image_counter += 1
-                
+
         td_counter += 1
 
     print(Fore.BLUE + f"Total number of table cells: {td_counter}")
