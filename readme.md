@@ -4,7 +4,7 @@ This is a Python script that scrapes a Wikipedia page for image URLs and downloa
 
 ![screenshot](0.media/01_Scraping_Monet.png)
 
-Getting Started
+## Getting Started
 To use this script, you will need to have Python 3 installed on your machine. You will also need to install the following Python libraries:
 
 - requests
@@ -17,8 +17,11 @@ You can install these libraries using pip. For example:
 pip install requests beautifulsoup4 colorama
 ```
 
-Usage
-To use the script, simply run the scrape_monet_wiki.py file using Python. The script will scrape the Wikipedia page and download the corresponding images to a folder called 1.original_files. The progress of the scraping and downloading process will be logged to a file called download.log.
+## Usage
+To use the script, simply run the scrape_monet_wiki.py file using Python.
+
+
+The script will scrape the Wikipedia page and download the corresponding images to a folder called 1.original_files. The progress of the scraping and downloading process will be logged to a file called download.log.
 
 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
